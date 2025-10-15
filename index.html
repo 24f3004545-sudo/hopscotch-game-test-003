@@ -3,193 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hopscotch</title>
+    <title>Interactive Hopscotch</title>
     <style>
         :root {
             --square-size: 100px;
             --gap-size: 10px;
-            --border-color: #333;
-            --marker-color: #ff6347; /* Tomato color for the marker */
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: #f0f8ff;
-            color: #333;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin: 0;
-            padding: 20px;
             min-height: 100vh;
-            box-sizing: border-box;
+            margin: 20px 0;
+            color: #333;
         }
 
         h1 {
-            margin: 0;
+            margin-bottom: 20px;
         }
 
-        p {
-            margin: 10px 0 20px 0;
-            color: #555;
-        }
-
-        .hopscotch-court {
+        #hopscotch-court {
             display: grid;
             grid-template-columns: var(--square-size) var(--square-size);
             gap: var(--gap-size);
-            justify-content: center;
+            width: fit-content;
+            padding: 15px;
+            background-color: #d3d3d3;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
         .square {
             width: var(--square-size);
             height: var(--square-size);
-            border: 2px solid var(--border-color);
+            background-color: #ffffff;
+            border: 2px solid #a0a0a0;
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5rem;
+            font-size: 2.5em;
             font-weight: bold;
+            color: #555;
             cursor: pointer;
             user-select: none;
-            transition: background-color 0.2s ease-in-out;
             position: relative;
-            background-color: #fff;
-            box-sizing: border-box; /* Ensures padding/border is included in width/height */
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
         }
 
         .square:hover {
-            background-color: #e6f2ff;
+            background-color: #fdfd96;
         }
 
-        /* Single squares span both columns */
-        .square[data-number="1"],
-        .square[data-number="2"],
-        .square[data-number="3"],
-        .square[data-number="6"],
-        .square[data-number="9"] {
-            grid-column: 1 / 3;
+        .square:active {
+            transform: scale(0.97);
         }
 
-        /* The 10 square is special, making it a semi-circle for 'home' */
-        .square[data-number="10"] {
-            grid-column: 1 / 3;
-            border-radius: calc(var(--square-size) + var(--gap-size)) calc(var(--square-size) + var(--gap-size)) 0 0;
-            border-bottom: none;
-            height: calc(var(--square-size) / 2);
-            align-items: flex-end;
-            padding-bottom: 10px;
+        .square.single {
+            grid-column: 1 / span 2;
         }
 
-        /* Marked state adds a pseudo-element for the 'piece' */
-        .square.marked::after {
-            content: '🪨'; /* Rock emoji as the marker */
-            font-size: 2.5rem;
+        .marker {
+            width: 40px;
+            height: 40px;
+            background-color: #ff6347; /* Tomato Red */
+            border: 2px solid white;
+            border-radius: 50%;
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            opacity: 0.9;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+            pointer-events: none; /* Make marker non-clickable */
         }
-
-        /* Adjust marker position for the semi-circle '10' square */
-        .square[data-number="10"].marked::after {
-             top: 80%;
+        
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            :root {
+                --square-size: 70px;
+                --gap-size: 8px;
+            }
+            .square {
+                font-size: 2em;
+            }
+            .marker {
+                width: 30px;
+                height: 30px;
+            }
         }
-
-        #resetButton {
-            margin-top: 30px;
-            padding: 12px 24px;
-            font-size: 1rem;
-            font-weight: bold;
-            color: #fff;
-            background-color: #007bff;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        #resetButton:hover {
-            background-color: #0056b3;
-        }
-
     </style>
 </head>
 <body>
 
-    <h1>Hopscotch</h1>
-    <p>Click a square to place your marker. Your progress is saved!</p>
-
-    <div class="hopscotch-court">
-        <!-- Elements are ordered visually from top to bottom -->
-        <div class="square" data-number="10">10</div>
-        <div class="square" data-number="9">9</div>
-        <div class="square" data-number="7">7</div>
+    <h1>Hopscotch Court</h1>
+    <div id="hopscotch-court">
+        <div class="square single" data-number="10">10</div>
         <div class="square" data-number="8">8</div>
-        <div class="square" data-number="6">6</div>
-        <div class="square" data-number="4">4</div>
+        <div class="square" data-number="9">9</div>
+        <div class="square single" data-number="7">7</div>
         <div class="square" data-number="5">5</div>
-        <div class="square" data-number="3">3</div>
+        <div class="square" data-number="6">6</div>
+        <div class="square single" data-number="4">4</div>
         <div class="square" data-number="2">2</div>
-        <div class="square" data-number="1">1</div>
+        <div class="square" data-number="3">3</div>
+        <div class="square single" data-number="1">1</div>
     </div>
-
-    <button id="resetButton">Reset Court</button>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const squares = document.querySelectorAll('.square');
-            const resetButton = document.getElementById('resetButton');
-            const STORAGE_KEY = 'hopscotchMarkedState';
+            const court = document.getElementById('hopscotch-court');
+            const STORAGE_KEY = 'hopscotchMarkedSquares';
 
-            // Function to load the marked state from localStorage
-            const loadState = () => {
+            // Safely get marked squares from localStorage
+            function getSavedMarks() {
                 try {
-                    const markedSquares = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-                    squares.forEach(square => {
-                        if (markedSquares.includes(square.dataset.number)) {
-                            square.classList.add('marked');
-                        }
-                    });
+                    const saved = localStorage.getItem(STORAGE_KEY);
+                    return saved ? JSON.parse(saved) : [];
                 } catch (error) {
-                    console.error('Could not load hopscotch state:', error);
-                    // If there's an error, clear the corrupted state
-                    localStorage.removeItem(STORAGE_KEY);
+                    console.error('Error reading from localStorage:', error);
+                    return [];
                 }
-            };
+            }
 
-            // Function to save the current marked state to localStorage
-            const saveState = () => {
-                const markedSquares = [];
-                squares.forEach(square => {
-                    if (square.classList.contains('marked')) {
-                        markedSquares.push(square.dataset.number);
+            // Save marked squares to localStorage
+            function saveMarks() {
+                const markedNumbers = [];
+                document.querySelectorAll('.square .marker').forEach(marker => {
+                    const square = marker.parentElement;
+                    if (square && square.dataset.number) {
+                        markedNumbers.push(square.dataset.number);
                     }
                 });
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(markedSquares));
-            };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(markedNumbers));
+            }
 
-            // Add click event listener to each square
-            squares.forEach(square => {
-                square.addEventListener('click', () => {
-                    square.classList.toggle('marked');
-                    saveState();
+            // Add a visual marker to a square element
+            function addMarker(square) {
+                if (!square.querySelector('.marker')) {
+                    const marker = document.createElement('div');
+                    marker.className = 'marker';
+                    square.appendChild(marker);
+                }
+            }
+
+            // Remove the visual marker from a square element
+            function removeMarker(square) {
+                const marker = square.querySelector('.marker');
+                if (marker) {
+                    square.removeChild(marker);
+                }
+            }
+
+            // Load marks from storage and apply them to the UI
+            function renderInitialMarks() {
+                const markedNumbers = getSavedMarks();
+                markedNumbers.forEach(number => {
+                    const square = document.querySelector(`.square[data-number="${number}"]`);
+                    if (square) {
+                        addMarker(square);
+                    }
                 });
-            });
+            }
 
-            // Add click event listener to the reset button
-            resetButton.addEventListener('click', () => {
-                squares.forEach(square => {
-                    square.classList.remove('marked');
-                });
-                saveState(); // Saves the empty state
-            });
+            // Handle click events on the court
+            function handleCourtClick(event) {
+                const square = event.target.closest('.square');
+                if (!square) return; // Exit if the click wasn't on a square
 
-            // Initial load of the state when the page is ready
-            loadState();
+                if (square.querySelector('.marker')) {
+                    removeMarker(square);
+                } else {
+                    addMarker(square);
+                }
+
+                saveMarks();
+            }
+
+            // Initial setup
+            court.addEventListener('click', handleCourtClick);
+            renderInitialMarks();
         });
     </script>
 
